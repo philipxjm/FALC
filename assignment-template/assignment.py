@@ -1,4 +1,7 @@
 from tensorflow.examples.tutorials.mnist import input_data
+import os
+# Killing optional CPU driver warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import functools
 
@@ -83,7 +86,7 @@ def main():
     label = tf.placeholder(tf.float32, [None, 10])
     model = Model(image, label)
     sess = tf.Session()
-    sess.run(tf.initialize_all_variables())
+    sess.run(tf.global_variables_initializer())
 
     for _ in range(10):
         images, labels = mnist.test.images, mnist.test.labels
@@ -92,6 +95,7 @@ def main():
         for _ in range(60):
             images, labels = mnist.train.next_batch(100)
             sess.run(model.optimize, {image: images, label: labels})
+    images, labels = mnist.test.images, mnist.test.labels
     acc = sess.run(model.accuracy, {image: images, label: labels})
     print(acc)
 
