@@ -1,5 +1,7 @@
 import os
 import zipfile
+import importlib
+import csv
 
 
 def extract_zipped_homeworks(hw_name, extension="zip"):
@@ -22,7 +24,24 @@ def extract_zipped_homeworks(hw_name, extension="zip"):
 
 
 def run_tests(hw_name):
-    pass
+    spec = importlib.util.spec_from_file_location(
+                    hw_name + "_tests", "./test_suites/" + hw_name + "_tests.py")
+    test_suite = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(test_suite)
+
+    if os.path.exists("homeworks/" + hw_name + "/unzipped/"):
+        parent_path = "./homeworks/" + hw_name + "/unzipped/"
+        names = next(os.walk(parent_path))[1]
+        grades = {name: 0 for name in names}
+        for name in names:
+            hw_path = parent_path + name + "/assignment.py"
+            grades[name] = test_suite.run_suite_on_file(hw_path)
+        with open("grades/" + hw_name + '_grades.csv', 'w') as f:
+            w = csv.DictWriter(f, grades.keys())
+            w.writeheader()
+            w.writerow(grades)
+        print(grades)
 
 
-extract_zipped_homeworks("hw0")
+# extract_zipped_homeworks("hw0")
+run_tests("hw0")
