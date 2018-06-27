@@ -1,9 +1,8 @@
 import os
-import subprocess
 import zipfile
 
 
-def extract_zipped_homeworks(hw_name="hw0", extension="zip"):
+def extract_zipped_homeworks(hw_name, extension="zip"):
     zipped_dir_name = "homeworks/" + hw_name + "/zipped/"
     unzipped_dir_name = "homeworks/" + hw_name + "/unzipped/"
     if not os.path.exists(zipped_dir_name):
@@ -16,11 +15,14 @@ def extract_zipped_homeworks(hw_name="hw0", extension="zip"):
         if item.endswith(extension):
             file_name = os.path.abspath(item)
             zip_ref = zipfile.ZipFile(zipped_dir_name + item)
-            zip_ref.extractall(unzipped_dir_name + "/" + item.split('_')[1])
+            zip_ref.extractall(unzipped_dir_name +
+                               "/" +
+                               item.split('_')[1].split('.')[0])
             zip_ref.close()
 
 
-def run_tests(arg):
+def run_tests(hw_name):
     pass
 
-extract_zipped_homeworks()
+
+extract_zipped_homeworks("hw0")

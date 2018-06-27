@@ -1,9 +1,9 @@
 from tensorflow.examples.tutorials.mnist import input_data
 import os
-# Killing optional CPU driver warnings
-os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import functools
+# Killing optional CPU driver warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 def doublewrap(function):
@@ -33,6 +33,7 @@ def define_scope(function, scope=None, *args, **kwargs):
     """
     attribute = '_cache_' + function.__name__
     name = scope or function.__name__
+
     @property
     @functools.wraps(function)
     def decorator(self):
@@ -75,7 +76,8 @@ class Model:
 
     @define_scope
     def accuracy(self):
-        correct_prediction = tf.equal(tf.argmax(self.prediction, 1), tf.argmax(self.label, 1))
+        correct_prediction = tf.equal(tf.argmax(self.prediction, 1),
+                                      tf.argmax(self.label, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
         return accuracy
 
@@ -98,6 +100,7 @@ def main():
     images, labels = mnist.test.images, mnist.test.labels
     acc = sess.run(model.accuracy, {image: images, label: labels})
     print(acc)
+
 
 if __name__ == '__main__':
     main()
