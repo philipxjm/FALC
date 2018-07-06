@@ -41,6 +41,7 @@ def run_tests(hw_name):
             w.writeheader()
             w.writerow(grades)
         print(grades)
+        return grades
 
 
 # extract_zipped_homeworks("hw0")
