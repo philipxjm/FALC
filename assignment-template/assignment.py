@@ -1,7 +1,9 @@
 from tensorflow.examples.tutorials.mnist import input_data
 import os
 import tensorflow as tf
-import functools
+old_v = tf.logging.get_verbosity()
+tf.logging.set_verbosity(tf.logging.ERROR)
+import functools # noqa
 # Killing optional CPU driver warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 

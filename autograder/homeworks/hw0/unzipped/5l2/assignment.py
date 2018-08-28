@@ -56,7 +56,7 @@ class Model:
     @define_scope(initializer=tf.contrib.slim.xavier_initializer())
     def prediction(self):
         x = self.image
-        x = tf.contrib.slim.fully_connected(x, 5)
+        x = tf.contrib.slim.fully_connected(x, 50)
         x = tf.contrib.slim.fully_connected(x, 10, tf.nn.softmax)
         return x
 

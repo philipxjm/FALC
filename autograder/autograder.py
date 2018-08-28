@@ -2,6 +2,7 @@ import os
 import zipfile
 import importlib
 import csv
+import argparse
 
 
 def extract_zipped_homeworks(hw_name, extension="zip"):
@@ -15,17 +16,18 @@ def extract_zipped_homeworks(hw_name, extension="zip"):
     for item in os.listdir(zipped_dir_name):
         print(item)
         if item.endswith(extension):
-            file_name = os.path.abspath(item)
             zip_ref = zipfile.ZipFile(zipped_dir_name + item)
             zip_ref.extractall(unzipped_dir_name +
                                "/" +
-                               item.split('_')[1].split('.')[0])
+                               encrypt(item.split('_')[1].split('.')[0]))
             zip_ref.close()
 
 
 def run_tests(hw_name):
     spec = importlib.util.spec_from_file_location(
-                    hw_name + "_tests", "./test_suites/" + hw_name + "_tests.py")
+        hw_name + "_tests",
+        "./test_suites/" + hw_name + "_tests.py"
+    )
     test_suite = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(test_suite)
 
@@ -34,6 +36,7 @@ def run_tests(hw_name):
         names = next(os.walk(parent_path))[1]
         grades = {name: 0 for name in names}
         for name in names:
+            print("Running Test on: " + name)
             hw_path = parent_path + name + "/assignment.py"
             grades[name] = test_suite.run_suite_on_file(hw_path)
         with open("grades/" + hw_name + '_grades.csv', 'w') as f:
@@ -43,5 +46,25 @@ def run_tests(hw_name):
         print(grades)
 
 
-# extract_zipped_homeworks("hw0")
-run_tests("hw0")
+def encrypt(mes):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    key = "l5029dvb81mokxqscygnhatzpu4ewi7f3jr6"
+    keyIndices = [alphabet.index(k.lower()) for k in mes]
+    return ''.join(key[keyIndex] for keyIndex in keyIndices)
+
+
+def decrypt(mes):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    key = "l5029dvb81mokxqscygnhatzpu4ewi7f3jr6"
+    keyIndices = [key.index(k) for k in mes]
+    return ''.join(alphabet[keyIndex] for keyIndex in keyIndices)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--name', required=True)
+    args = parser.parse_args()
+    hw_name = args.name
+    if not os.path.exists("homeworks/" + hw_name + "/unzipped/"):
+        extract_zipped_homeworks(hw_name)
+    run_tests("hw0")

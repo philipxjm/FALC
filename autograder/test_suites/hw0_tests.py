@@ -1,9 +1,9 @@
-import sys
-# from homeworks.hw0.unzipped.assignment import Model  # noqa
 from tensorflow.examples.tutorials.mnist import input_data  # noqa
 import os  # noqa
 import tensorflow as tf  # noqa
-import importlib.util
+old_v = tf.logging.get_verbosity()
+tf.logging.set_verbosity(tf.logging.ERROR)
+import importlib.util # noqa
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -27,13 +27,14 @@ def acc_test(assignment, threshold=0.85):
 
         for _ in range(10):
             images, labels = mnist.test.images, mnist.test.labels
-            error = sess.run(model.error, {image: images, label: labels})
-            print('Test error {:6.2f}%'.format(100 * error))
+            # error = sess.run(model.error, {image: images, label: labels})
+            # print('Test error {:6.2f}%'.format(100 * error))
             for _ in range(60):
                 images, labels = mnist.train.next_batch(100)
                 sess.run(model.optimize, {image: images, label: labels})
         images, labels = mnist.test.images, mnist.test.labels
         acc = sess.run(accuracy(model), {image: images, label: labels})
+        print('Final Accuracy on Test:' + str(acc))
         if acc > threshold:
             return True
         return False
