@@ -44,6 +44,7 @@ def run_tests(hw_name):
             w.writeheader()
             w.writerow(grades)
         print(grades)
+        return grades
 
 
 def encrypt(mes):
